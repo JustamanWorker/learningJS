@@ -1,28 +1,65 @@
-let money = parseInt(prompt("Ваш бюджет на месяц?", "0"));
-let time = prompt("Введите дату в формате YYYY-MM-DD?", "2019-05-05");
-//let expenses = prompt("Введите дату в формате YYYY-MM-DD?", "2019-05-05");
+let money, time;
+
+function start() {
+    money = +prompt("Ваш бюджет на месяц?", "0");
+    time = prompt("Введите дату в формате YYYY-MM-DD?", "2019-05-05");
+
+    while(isNaN(money) || money =="" || money == null){
+        money = parseInt(prompt("Ваш бюджет на месяц?", "0"));
+    }
+}
+
+start();
 
 let appData = {
     budjet: money,
     timeData: time,
-    expenses: null,
-    optionalExpenses: null,
-    income: null,
-    savings: false,
+    expenses: {},
+    optionalExpenses: {},
+    income: [],
+    savings: true,
 };
 
-let topic1 = prompt("Введите обязательную статью расходов в этом месяце");
-let spend1 = parseInt(prompt("Во сколько это обойдется?", "0"));
+function chooseExpenses(){
+    for (let i=0; i<2; i++){
+        let topic = prompt("Введите обязательную статью расходов в этом месяце"),
+            spend = parseInt(prompt("Во сколько это обойдется?", "0"));
+        if ((typeof(topic))==='string'&&(typeof(topic))!=null &&
+        (typeof(spend))!= null && topic!='' && spend != "" && topic.length<50) {
+            console.log("done");
+                appData.expenses[topic]=spend;
+        } else {
+            i--;
+        }
+    }
+}
 
-let topic2 = prompt("Введите обязательную статью расходов в этом месяце (2)");
-let spend2 = parseInt(prompt("Во сколько это обойдется? (2)", "0"));
+chooseExpenses();
 
-appData.expenses = {
-    topic1: spend1,
-    topic2: spend2
-};
+function detectDayBudget(){
+    alert("Ваш бюджет на день - " + (appData.budjet/30).toFixed());
+}
 
-time = time.substring(8);
-alert("Ваш бюджет на день - " + (appData.budjet - appData.expenses.topic1 - appData.expenses.topic2)/(30-parseInt(time)));
+detectDayBudget();
 
+function checkSavings() {
+    if(appData.savings == true){
+        let save = +prompt("Какова сумма накоплений?"),
+            percent = +prompt("Под какой процент?");
 
+        appData.monthIncome = save/100/12*percent;
+        alert("Доход в месяц с вашего депозита: "+ appData.monthIncome);
+    }
+}
+
+checkSavings();
+
+function chooseOptExpenses(){
+    for (let i = 0; i<3; i++){
+        let topic = prompt("Статья необязательных расходов?"),
+            spend = parseInt(prompt("Во сколько это обойдется?", "0"));
+        appData.optionalExpenses[topic]=spend;
+    }
+}
+
+chooseOptExpenses();
